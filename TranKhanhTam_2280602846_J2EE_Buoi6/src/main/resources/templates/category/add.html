@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{product/_layout}">
+<head><title>Xác nhận đơn hàng</title></head>
+<body>
+<div layout:fragment="content">
+    <h3 class="mb-4">
+        <i class="bi bi-cart-check"></i> Xác nhận đơn hàng
+    </h3>
+
+    <div th:if="${selectedProduct != null}" class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <img th:src="${selectedProduct.image}" class="card-img-top"
+                     th:if="${selectedProduct.image != null}">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${selectedProduct.name}"></h5>
+                    <p class="card-text text-danger fw-bold">
+                        Giá: <span th:text="${#numbers.formatDecimal(selectedProduct.price, 0, 'COMMA', 0, 'POINT')}"></span> VNĐ
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <form th:action="@{/order/submit}" method="post">
+                <input type="hidden" name="productId" th:value="${selectedProduct.id}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Người đặt:</label>
+                    <input type="text" class="form-control"
+                           th:value="${#authentication.name}" readonly>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Ghi chú:</label>
+                    <textarea class="form-control" name="notes" rows="3"
+                              placeholder="Nhập địa chỉ giao hàng..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> Xác nhận đặt mua
+                </button>
+                <a th:href="@{/products}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <div th:unless="${selectedProduct != null}" class="alert alert-warning">
+        Vui lòng chọn sản phẩm từ danh sách để đặt hàng.
+    </div>
+</div>
+</body>
+</html>
